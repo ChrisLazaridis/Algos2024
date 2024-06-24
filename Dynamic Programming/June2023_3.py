@@ -1,48 +1,66 @@
 # Θεωρόντας μια επέκταση του προβλήματος του σακιδίου με όγκο V, αξία προϊόντος pi και μέγιστο μεταφερόμενο βαρός W
 # Να ευρεθεί ένας αλγόριθμος δυναμικού προγραμματισμού που να βρίσκει το μέγιστο profit και αν αναλυθεί χρονικά
-# Χρόνος δικής μου (ο θεός να τη κάνει) εκδοχής: O(n * v) = O(n)
-def knapsack_mine(p, v, w, V_, W_):
-    dp = [[0] * (V_ + 1) for _ in range(len(p) + 1)]
-    for i in range(len(p) + 1):
-        for j in range(V_ + 1):
-            dp[i][j] = max(dp[i - 1][j], dp[i - 1][j] + p[i] if (v[i - 1] + v[i] < V_ and w[i - 1] + w[i] < W_) else 0)
-    return dp[len(p)][V_]
+# αναδρομή για απλό πρόβλημα knapsack
+def knapsack_recursive(p, w, W_, n):
+    if n < 0:
+        return 0
+    elif w[n - 1] > W_:  # Αν δεν μπορείς να το πάρεις, άστο
+        return knapsack_recursive(p, w, W_, n - 1)
+    else:
+        take_i = knapsack_recursive(p, w, W_ - w[n - 1], n - 1) + p[n - 1]  # Πάρτο
+        skip_i = knapsack_recursive(p, w, W_, n - 1)  # Μη το πάρεις
+        return max(take_i, skip_i)
 
 
-# Σωστή λύση
-def knapsack(p, v, w, V_, W_):
-    n = len(p)
-    dp = [[0] * (V_ + 1) for _ in range(n + 1)]
-
-    for i in range(1, n + 1):
-        for j in range(V_ + 1):
-            if v[i - 1] <= j:  # Check if we can include the i-th item
-                dp[i][j] = max(dp[i - 1][j], dp[i - 1][j - v[i - 1]] + p[i - 1] if w[i - 1] <= W_ else dp[i - 1][j])
-            else:
-                dp[i][j] = dp[i - 1][j]
-
-    return dp[n][V_]
+# προφανώς και για αυτό το πρόβλημα δεν κάνει αλλά αποτελεί μια καλή βάση
+# Ουσιαστικά θα βάλουμε και άλλο ένα check, κατά τα άλλα έχω ίδιο base case
+def knapsack_extended_recursive(p, w, v, W_, V_, n):
+    if n < 0:
+        return 0
+    elif w[n - 1] > W_ or v[n - 1] > V_:
+        return knapsack_extended_recursive(p, w, v, W_, V_, n - 1)
+    else:
+        take_i = knapsack_extended_recursive(p, w, v, W_ - w[n - 1], V_ - v[n - 1], n - 1) + p[n - 1]
+        skip_i = knapsack_extended_recursive(p, w, v, W_, V_, n - 1)
+        return max(take_i, skip_i)
 
 
-def knapsack_memoization(p, v, w, V_, W_):
-    n = len(p)
-    memo = {}
+def knapsack_extended_dynamic(p, w, v, W_, V_, n, dp):
+    if n < 0:
+        return 0
 
-    def knapsack_helper(i, remaining_v):
-        if i == 0 or remaining_v == 0:
-            return 0
+    if dp[n] != -1:
+        return dp[n]
 
-        if (i, remaining_v) in memo:
-            return memo[(i, remaining_v)]
+    if w[n - 1] > W_ or v[n - 1] > V_:
+        dp[n] = knapsack_extended_dynamic(p, w, v, W_, V_, n - 1, dp)
+    else:
+        take_i = knapsack_extended_dynamic(p, w, v, W_ - w[n - 1], V_ - v[n - 1], n - 1, dp) + p[n - 1]
+        skip_i = knapsack_extended_dynamic(p, w, v, W_, V_, n - 1, dp)
+        dp[n] = max(take_i, skip_i)
 
-        if v[i - 1] > remaining_v:
-            result = knapsack_helper(i - 1, remaining_v)
-        else:
-            take_item = p[i - 1] + knapsack_helper(i - 1, remaining_v - v[i - 1]) if w[i - 1] <= W_ else 0
-            skip_item = knapsack_helper(i - 1, remaining_v)
-            result = max(take_item, skip_item)
+    return dp[n]
 
-        memo[(i, remaining_v)] = result
-        return result
 
-    return knapsack_helper(n, V_)
+# Time complexity: O(n) όπως κάθε memoization αλγόριθμος (ελπίζω να το δέχεται
+# Space complexity: O(n) λόγω του dp array
+
+def knapsack_extended_helper(p, w, v, W_, V_):
+    if len(p) == 0 or len(p) != len(w) != len(v) or W_ == 0 or V_ == 0:
+        return 0
+    else:
+        n = len(p)
+        dp = [-1] * (n + 1)
+        return knapsack_extended_dynamic(p, w, v, W_, V_, n, dp)
+
+
+# Example usage
+p = [60, 100, 120]
+w = [10, 20, 30]
+v = [5, 10, 15]
+W_ = 50
+V_ = 30
+
+result = knapsack_extended_helper(p, w, v, W_, V_)
+
+print(f"result is: {result}")

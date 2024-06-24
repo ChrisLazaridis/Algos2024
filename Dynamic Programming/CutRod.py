@@ -7,7 +7,7 @@ def cut_rod(p, n):
     if n == 0:
         return 0
     q = float('-inf')
-    for i in range(1, n + 1): 
+    for i in range(1, n + 1):
         q = max(q, p[i - 1] + cut_rod(p, n - i))
     return q
 
@@ -19,17 +19,17 @@ def dynamic_cut_rod(p, n):
     return dynamic_cut_rod_aux(p, n, r)
 
 
-def dynamic_cut_rod_aux(p, n, r):
-    if r[n] >= 0:
-        return r[n]
+def dynamic_cut_rod_aux(p, n, dp):
+    if dp[n] >= 0:
+        return dp[n]
     if n == 0:
         q = 0
     else:
         q = float('-inf')
         for i in range(1, n + 1):
             if i <= len(p):  # Check if i is within the bounds of p
-                q = max(q, p[i - 1] + dynamic_cut_rod_aux(p, n - i, r))
-    r[n] = q
+                q = max(q, p[i - 1] + dynamic_cut_rod_aux(p, n - i, dp))
+    dp[n] = q
     return q
 
 
