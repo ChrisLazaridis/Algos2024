@@ -1,5 +1,5 @@
-# Given an array of positive integers, n elements. Develop an algorithm based on the divide and conquer algorithm
-# that will find and return the max(x[j]/x[i]) where i,j in n and i < j.
+# Δωθέντος ενός πίνακα θετικών n ακεραίων, να αναπτυχθεί αλγόριθμος βασισμένος στη τεχνική διαίρει και βασίλευε
+# o οποίος θα βρει και θα επιστρέψει το max(A[j]/A[i], όπου i,j ∈ n και i < j.
 
 # Βήματα για τη λύση
 # 1. Χωρίζουμε το πίνακα σε 2 μισά
