@@ -7,10 +7,9 @@
 # Αν οι 2 λέξεις έχουν τον ίδιο χαρακτήρα στα i,j τότε προχωράω αυξάνοντας και τα 2 αφού δεν χρειάζεται να κάνω κάτι
 # για αυτό το χαρακτήρα
 # Αν πάλι όχι τότε δοκιμάζω κάθε πιθανό σενάριο
-# Κάθε φορά κρατάω το ελάχιστο της μιας εκ των τριών διαδικασιών
-# Εισαγωγή στη word1, αυξάνω το δείκτη της word1
-# Διαγραφή στης word1, αυξάνω το δείκτη της word2
-# Αντικατάσταση, αυξάνω και τα 2 indexes κατά 1
+# Κάθε φορά κρατάω το ελάχιστο της μιας εκ των τριών επιλογών
+# Η θα αυξήσω τον ένα δείκτη, ή τον άλλον ή και τους 2
+# Αν δεν είναι ίδια τα γράμματα στου δείκτες τότε θα προσθέσω και μια διαδικασία στο τελικό counter
 # Με memoization έχω 2 indexes άρα n^2 πιθανές λύσεις άρα δισδιάστατο dp
 
 
@@ -35,10 +34,10 @@ class Solution:
         if word1[i] == word2[j]:
             return self.minDistanceRecursive(word1, word2, i + 1, j + 1)
         else:
-            insert = 1 + self.minDistanceRecursive(word1, word2, i + 1, j)
-            delete = 1 + self.minDistanceRecursive(word1, word2, i, j + 1)
-            replace = 1 + self.minDistanceRecursive(word1, word2, i + 1, j + 1)
-            return min(insert, delete, replace)
+            choice_1 = 1 + self.minDistanceRecursive(word1, word2, i + 1, j)
+            choice_2 = 1 + self.minDistanceRecursive(word1, word2, i, j + 1)
+            choice_3 = 1 + self.minDistanceRecursive(word1, word2, i + 1, j + 1)
+            return min(choice_1, choice_2, choice_3)
 
     def minDistanceDynamic(self, i, j):
         if i == len(self.word1):
@@ -52,9 +51,9 @@ class Solution:
         if self.word1[i] == self.word2[j]:
             self.dp[i][j] = self.minDistanceDynamic(i + 1, j + 1)
         else:
-            insert = 1 + self.minDistanceDynamic(i, j + 1)
-            delete = 1 + self.minDistanceDynamic(i + 1, j)
-            replace = 1 + self.minDistanceDynamic(i + 1, j + 1)
-            self.dp[i][j] = min(insert, delete, replace)
+            choice_1 = 1 + self.minDistanceDynamic(i, j + 1)
+            choice_2 = 1 + self.minDistanceDynamic(i + 1, j)
+            choice_3 = 1 + self.minDistanceDynamic(i + 1, j + 1)
+            self.dp[i][j] = min(choice_1, choice_2, choice_3)
 
         return self.dp[i][j]
