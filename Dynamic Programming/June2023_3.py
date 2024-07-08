@@ -29,6 +29,7 @@ def knapsack_extended_recursive(p, w, v, W_, V_, n):
 
 def knapsack_extended_dynamic(p, w, v, W_, V_, n, dp):
     if n == 0 or W_ == 0 or V_ == 0:
+        dp[n][W_][V_] = 0
         return 0
 
     # αν το έχω βρει
