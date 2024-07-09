@@ -10,7 +10,10 @@ from typing import Dict, Tuple
 # Αλλιώς δοκιμάζω και τα 2
 def maxTotalRewardRec(rewardValues: list[int], x: int, index: int) -> int:
     if index == len(rewardValues):
-        return x
+        if rewardValues[index] > x:
+            return x + list[index]
+        else:
+            return x
 
     not_take = maxTotalRewardRec(rewardValues, x, index + 1)
     if rewardValues[index] > x:
@@ -34,7 +37,10 @@ def maxTotalReward(rewardValues: list[int]) -> int:
 def maxTotalRewardDynamic(rewardValues: list[int], x: int, index: int,
                           dp: Dict[Tuple[int, int], int], ) -> int:
     if index == len(rewardValues):
-        return x
+        if rewardValues[index] > x:
+            return x + rewardValues[index]
+        else:
+            return x
 
     if (index, x) in dp:
         return dp[(index, x)]
@@ -50,4 +56,3 @@ def maxTotalRewardDynamic(rewardValues: list[int], x: int, index: int,
     dp[(index, x)] = max(take, not_take)
 
     return dp[(index, x)]
-

@@ -26,6 +26,7 @@ def maxAreaRec(i, j, max_water, height):
         return max_water
     if (j - i) * min(height[i], height[j]) > max_water:
         max_water = (j - i) * min(height[i], height[j])
+        return max_water
     if height[i] > height[j]:
         return maxAreaRec(i, j - 1, max_water, height)
     else:
